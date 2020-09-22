@@ -17,7 +17,11 @@ If you want to see what the font looks like you can view all the glyphs by viewi
 # Installation
 
 Navigate to the Github Releases page.
-Download the latest release.
+
+Download the latest release or click green CODE button and then "Download ZIP file"
+
+Rename zip file or directory "RingFontDisplay"
+
 In the Arduino IDE, navigate to Sketch > Include Library > Add .ZIP Library
 
 
