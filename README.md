@@ -14,6 +14,8 @@ After downloading, rename folder to 'RingFontDisplay' and install in Arduino Lib
 
 If you want to see what the font looks like you can view all the glyphs by viewing /docs/DendroFontGlyphs.pdf 
 
+See them at https://github.com/jeff-luszcz/RingFontDisplay/blob/master/docs/DendroFontGlyphs.pdf
+
 # Installation
 
 Navigate to the Github Releases page.
