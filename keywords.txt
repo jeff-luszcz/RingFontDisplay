@@ -1,0 +1,42 @@
+#######################################
+# Syntax Coloring Map For RingFontDisplay
+#######################################
+
+#######################################
+# Library (KEYWORD3)
+#######################################
+
+RingFontDisplay	KEYWORD3
+
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+clear KEYWORD2
+demo KEYWORD2
+drawArc KEYWORD2
+drawChar KEYWORD2
+drawGlyph KEYWORD2
+drawNumArc KEYWORD2
+drawSpinner KEYWORD2
+marchingAnts KEYWORD2
+print KEYWORD2
+printSmile KEYWORD2
+setBackgroundColor KEYWORD2
+setDelayVal KEYWORD2
+setFlashVal KEYWORD2
+setForegroundColor KEYWORD2
+setPixel KEYWORD2
+testAscii KEYWORD2
+pixels KEYWORD2
+
+
+#######################################
+# Constants (LITERAL1)
+#######################################
