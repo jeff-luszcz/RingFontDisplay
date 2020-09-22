@@ -137,6 +137,7 @@ const unsigned long font[95] = {
   0b00000001000000000011100111100111,  // closing bracket
   0b00000001101000000000000000010111,  // caret - circumflex
   0b00000001000000001111110000000000,  // underscore
+  0b00000001110000000000000000000000   // grave accent         96
 };
 
 // Add some special non-ascii character glyphs
