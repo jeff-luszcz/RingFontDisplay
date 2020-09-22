@@ -1,12 +1,17 @@
-/* Copyright 2020 Jeff Luszcz
+/* 
+   Copyright 2020 Jeff Luszcz
+ 
   Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the
   Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
   and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+  
   The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+  
   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
   ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
   THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  
 */
 
 /* This is a library to display text on a Adafruit Neopixel 24 ring using a custom circle based font
@@ -14,32 +19,64 @@
     Configure the PIN define to specify which pin your NeoPixel ring is connected to
 
     v0.9 released 2020-09-21
-    
+
 */
 
 #include <Adafruit_NeoPixel.h>
 #include "RingFontDisplay.h"
 
+/* To use this library, use the following sample code
+
+  #include <Adafruit_NeoPixel.h>
+  #include "Arduino.h"
+
+  #include "RingFontDisplay.h"
+  // ARDUINO hardware and Neopixels Config section
+  // CONFIG: What pin on the Arduino is connected to the NeoPixels?
+  #define PIN        6
+
+  // CONFIG: many NeoPixels are attached to the Arduino?
+  #define NUMPIXELS 24
 
 
+  // set up the neopixels
+  Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+  // create the RigFontDisplay, passing in a configured set of neopixels
+  RingFontDisplay rfd(pixels);
+
+
+  void setup() {
+  pixels.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+  rfd.setForegroundColor(pixels.Color(20, 50, 0));  // set the font color to a dim green
+  rfd.setFlashVal(100);
+  }
+
+  void loop() {
+  rfd.print("Hello World!", 200);
+  rfd.demo();
+  }
+*/
+
+// The Dendro font v0.9
 // Define the Glyphs for each character in printable ASCII from 32-127
 const unsigned long font[95] = {
-  // Define LETTER font glyphs, array index is ASCII - 32
+  // Define LETTER font glyphs, array index is the ASCII value - 32
   // since we skip the  unprintable first 32 characters of ASCII table
   // The Glyphs include:
   // ASCII characters from 32 through 66 [ space through ' chracter ]
   // including all UPPERCASE chracters
   // skips lower case letters, they get printed as UPPERCASE
   // this toupper conversion is handled in the drawChar() method
-  // ignore bits 32-24, I use a 1 in bit 24 as a guide, it isn't printed
+  // The font glyph is made up of the last 24 bits of the folowing longs
+  // The LEDS are numbered in decending counter clockwise order
+  // ignore leading bits 32-24, I use a 1 in bit 24 as a visual guide, it isn't printed
   //         Pin number on led ring (23-0)
   //        222211111111110000000000
-  //        321098765432109876543210     Character-Name     ascii  array-index
+  //[IGNORE]321098765432109876543210     Character-Name     ascii  array-index
   0b00000001000000000000000000000000, // space                32   index = [0]
   0b00000001000000000001001111111100, // exclamation-mark     33
   0b00000001011000000000000000001100, // quotation-mark       34
   0b00000001100010100010100010100010, // number-sign          35
-  //  0b00000001111010000111111010000111, // dollar-sign          36
   0b00000001011100001101011100001101, // dollar-sign          36
   0b00000001001010011000001010011000, // percent-sign         37
   0b00000001100000111111110101000111, // ampersand   (&)      38
@@ -56,7 +93,6 @@ const unsigned long font[95] = {
   0b00000001000000000000111111111110, // one
   0b00000001110001011111110001111111, // two
   0b00000001000000000001111011011111, // three
-  //  0b00000001011110000001111111000000, // four
   0b00000001011110000001000000000001, // four
   0b00000001111110000111111010000111, // five
   0b00000001111111111111111110000001, // six
@@ -127,13 +163,14 @@ RingFontDisplay::RingFontDisplay(Adafruit_NeoPixel _pixels) {
 
 
 void RingFontDisplay::demo() {
-  setForegroundColor(pixels.Color(10, 10, 0));
+  setForegroundColor(pixels.Color(0, 10, 0));
   marchingAnts(10, 100);
   print("ABCDEFGHIJKLMNOPQRSTUVWXYZ", 500);
   print("abcdefghijklmnopqrstuvwxyz", 500);
   print("0123456789", 500);
   print(" !\"#$%&'()*+,-./", 500);
   print("[\]^_`", 500);
+  printSmile();
 }
 
 void RingFontDisplay::clear() {
@@ -162,18 +199,13 @@ void RingFontDisplay::setBackgroundColor(uint32_t color ) {
     Quickly flashes a duplicated letter if detected in string to let viewer know that two of the same characters are being displayed
 */
 void RingFontDisplay::print(char text[], int delayMillis) {
-  //Serial.println("String text:");
-  //Serial.println(text);
-
 
   for (int i = 0; i < strlen(text); i++ ) {
 
     char x = text[i];
-    //Serial.println(x);
 
     // test to see if we are printing same char twice in row, flash quickly if so
     if (lastChar == x) {
-      //Serial.println("last char == x");
       clear();
       delay(flashVal);
     }
@@ -182,13 +214,10 @@ void RingFontDisplay::print(char text[], int delayMillis) {
     drawChar(x);
     delay(delayVal);
   }
-
 }
 
 
 void RingFontDisplay::drawChar(int character) {
-  //Serial.print("drawChar:");
-  //Serial.println(character);
   // We only have one case for this font, so turn all lowercase letters into UPPER case
   // by subtracting 32 from the current ascii value, basically a toupper() call
   if (character > 96 && character < 123) {
@@ -203,9 +232,6 @@ void RingFontDisplay::drawChar(int character) {
 }
 
 void RingFontDisplay::drawGlyph(unsigned long fontGlyph) {
-  //Serial.print("fgColor=");
-  //Serial.println(fgColor);
-
   pixels.clear(); // Set all pixel colors to 'off'
   for (int i = 0; i < 24; i++) {
     if (bitRead( fontGlyph, i)) {
@@ -217,8 +243,6 @@ void RingFontDisplay::drawGlyph(unsigned long fontGlyph) {
       pixels.setPixelColor(i, bgColor);
     }
   }
-
-  //Serial.println("VVVVV");
   pixels.show();   // Send the updated pixel colors to the hardware.
 }
 
