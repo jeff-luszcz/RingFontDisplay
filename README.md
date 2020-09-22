@@ -2,7 +2,7 @@
 
 Arduino library that allows alphanumerical text to be displayed on a NeoPixel Ring or similar ring of LEDs using Dendro, a custom ring based font. The library currently works with 24 LED rings.
 
-The custom font has been designed to approximate standard letter shapes, some obvious tradeoffs have been made. The font should not require much training for casual use.
+The custom font has been designed to approximate standard letter shapes, some obvious tradeoffs have been made. The font should not require much human training for casual use.
 
 The messages displayed by this library can be used for IoT messages, errors, alerts, IDs and other useful pieces of short text.
 
@@ -11,6 +11,8 @@ The Dendro font contains characters ranging from ASCII 32-ASCII 122. The lower c
 This library has been tested with the Adafruit Neopixel Ring 24. 
 
 After downloading, rename folder to 'RingFontDisplay' and install in Arduino Libraries folder. Restart Arduino IDE, then open File->Sketchbook->Library->RingFontDisplay-> RingFontDisplayDemo sketch.
+
+If you want to see what the font looks like you can view all the glyphs by viewing /docs/DendroFontGlyphs.pdf 
 
 # Installation
 
@@ -92,6 +94,33 @@ RingFontDisplay is hosted on GitHub:
 
 https://github.com/jeff-luszcz/RingFontDisplay
 
+
+## Viewing or Changing the font glyphs
+
+NOTE: This section is not needed for just using the library as is. It is only required if you want to redefine any of the glyphs.
+ 
+The font is defined in the RingFontDisplay.cpp source file as an array of longs. The least significant / last 24 bits define each font glyph. Each glyph is a series of 1s and 0s that turn the LED on or off in each ring based glyph. LED 0 is defined at the top of the ring (e.g. 12 o'clock on a clock face).
+
+You can see what the glyphs look like by examining the pre-generated file DendroFontGlyphs.pdf in the docs directory. These glyphs are generated using the Graphviz utility and the RingFontGraphvizGen.py file. Run the python script using:
+
+`python RingFontGraphvizGen.py
+`
+
+and then run the generated script from inside the new 'glyphs' directory
+
+`cd glyphs`
+
+`chmod +x glyphsgenerateGlyphs.sh`
+
+`./glyphsgenerateGlyphs.sh`
+
+
+This will generate a glyphs.html file and interim .gv and png files. 
+A page showing all the glyphs (glyphs.html) can be viewed using Firefox (Note: Safari can't view local files)
+
+I have also used a printout of the LED numbering and small coins to try out different glyphs. Cover the LED #s with coins for 1s andleave blank for 0s. You can then read counter-clockwise to enter the bitfield of the new glyph in RingFontDisplay.cpp, edit the RingFontGraphvizGen.py file as well if you wish to generate an updated font-book. This is not needed for standard use of the library. The RingFontGraphvizGen.py file only uses the last 24 bits of the long.
+
+You can find this printable template in docs/GlyphDesignTemplate.pdf
 
 
 # License
